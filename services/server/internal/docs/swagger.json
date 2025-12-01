@@ -1,0 +1,517 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "REST API for notebooks, pages, categories, and workspaces.",
+        "title": "Notebook API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:3001",
+    "basePath": "/",
+    "paths": {
+        "/categories": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "List categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Category"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Create a category",
+                "parameters": [
+                    {
+                        "description": "Category payload",
+                        "name": "category",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Category"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Category"
+                        }
+                    }
+                }
+            }
+        },
+        "/notebooks": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notebooks"
+                ],
+                "summary": "List all notebooks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Notebook"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notebooks"
+                ],
+                "summary": "Create a notebook",
+                "parameters": [
+                    {
+                        "description": "Notebook payload",
+                        "name": "notebook",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Notebook"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Notebook"
+                        }
+                    }
+                }
+            }
+        },
+        "/notebooks/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notebooks"
+                ],
+                "summary": "Get a notebook by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Notebook ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Notebook"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/notebooks/{id}/pages": {
+            "get": {
+                "description": "Alias for GetPagesByNotebook (kept for compatibility)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pages"
+                ],
+                "summary": "Get pages by notebook",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Notebook ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Page"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new page belonging to a notebook",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pages"
+                ],
+                "summary": "Create a page in a notebook",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Notebook ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Page payload",
+                        "name": "page",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Page"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pages": {
+            "get": {
+                "description": "Returns all pages from all notebooks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pages"
+                ],
+                "summary": "Get all pages",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Page"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pages/{id}": {
+            "get": {
+                "description": "Returns a single page by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pages"
+                ],
+                "summary": "Get a page by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Page ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Page"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/workspaces": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspaces"
+                ],
+                "summary": "List all workspaces",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Workspace"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspaces"
+                ],
+                "summary": "Create a workspace",
+                "parameters": [
+                    {
+                        "description": "Workspace payload",
+                        "name": "workspace",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Workspace"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Category": {
+            "description": "Notebook category with metadata.",
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string",
+                    "example": "#FF9900"
+                },
+                "createdAt": {
+                    "type": "integer",
+                    "example": 1700000000000
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Category for coding notes"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "cat-123"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Programming"
+                },
+                "updatedAt": {
+                    "type": "integer",
+                    "example": 1700000500000
+                },
+                "workspaceId": {
+                    "type": "string",
+                    "example": "workspace-123"
+                }
+            }
+        },
+        "models.Notebook": {
+            "description": "A notebook containing pages.",
+            "type": "object",
+            "properties": {
+                "collaboratorIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"user-1\"",
+                        "\"user-2\"]"
+                    ]
+                },
+                "createdAt": {
+                    "type": "integer",
+                    "example": 1700000000000
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Study notes"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "nbk-123"
+                },
+                "isPublic": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "lastAccessedAt": {
+                    "type": "integer",
+                    "example": 1700000200000
+                },
+                "ownerId": {
+                    "type": "string",
+                    "example": "user-123"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"go\"",
+                        "\"api\"]"
+                    ]
+                },
+                "title": {
+                    "type": "string",
+                    "example": "My Notebook"
+                },
+                "updatedAt": {
+                    "type": "integer",
+                    "example": 1700000000000
+                },
+                "workspaceId": {
+                    "type": "string",
+                    "example": "workspace-123"
+                }
+            }
+        },
+        "models.Page": {
+            "description": "A content page inside a notebook.",
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "object"
+                },
+                "createdAt": {
+                    "type": "integer",
+                    "example": 1700000000000
+                },
+                "id": {
+                    "type": "string",
+                    "example": "page-123"
+                },
+                "lastExecutedAt": {
+                    "type": "integer",
+                    "example": 1700002000000
+                },
+                "notebookId": {
+                    "type": "string",
+                    "example": "nbk-123"
+                },
+                "order": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Intro"
+                },
+                "updatedAt": {
+                    "type": "integer",
+                    "example": 1700001000000
+                }
+            }
+        },
+        "models.Workspace": {
+            "description": "A workspace that contains notebooks and categories.",
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Category"
+                    }
+                },
+                "id": {
+                    "type": "string",
+                    "example": "workspace-123"
+                },
+                "notebooks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Notebook"
+                    }
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "user-123"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,114 @@
+/* ============================================================
+   TipTap Editor — Base Platform Styles
+   ============================================================ */
+
+.tiptap {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  word-wrap: break-word;
+
+
+  h4 {
+    // subtitle in toolbar
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: rgba(var(--v-theme-on-background), 0.7);
+  }
+
+  h6 {
+    // caption in toolbar
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: rgba(var(--v-theme-on-background), 0.7);
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  li {
+    margin: 0.25rem 0;
+  }
+
+  ::selection {
+    color: #000000;
+    background: rgba(0,188,242,0.45);
+  }
+
+  pre   ::selection {
+    color: #000000;
+    background: rgba(0,188,242,0.45);
+  }
+
+  /* stdout selection color */
+  .io-out ::selection {
+    background: rgba(0,188,242,0.45); // soft cyan to match stdout accent
+    color: white;
+  }
+
+  /* stderr selection color */
+  .io-err ::selection {
+    background: rgba(239,68,68,0.45); // red tonal error
+    color: white;
+  }
+
+  &:focus,
+  *:focus {
+    outline: none;
+  }
+
+  .ProseMirror:focus-visible {}
+
+  code:not(.hljs) {
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.9em;
+  }
+
+  pre {
+    margin: 0rem 0;
+    border-radius: 6px;
+    overflow: auto;
+    padding: 0.85rem 1rem;
+
+    code.hljs {
+      display: block;
+      background: transparent;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      line-height: 1.55;
+      tab-size: 2;
+      -moz-tab-size: 2;
+      font-size: 0.92rem;
+      padding: 0;
+    }
+  }
+
+  p > code:not(.hljs) {
+    position: relative;
+    top: -0.5px;
+  }
+
+  /* PyOutput */
+  .py-output-block pre,
+  .py-output-view .io-pre {
+    border-radius: 4px;
+    padding: 0.6rem 0.75rem;
+    white-space: break-spaces;
+  }
+
+  pre.code-scroll {
+    overflow-x: auto;
+    white-space: pre;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+
+  pre.code-scroll code {
+    display: inline-block;
+    min-width: 100%;
+  }
+}

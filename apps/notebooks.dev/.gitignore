@@ -1,0 +1,22 @@
+.DS_Store
+node_modules
+/dist
+
+# local env tiptap
+.env.local
+.env.*.local
+
+# Log tiptap
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and tiptap
+../../.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

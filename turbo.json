@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "stream",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        "build/**",
+        "dist/**"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "cache": false,
+      "persistent": true
+    },
+    "prisma:init": {
+      "cache": false,
+      "persistent": false
+    },
+    "prisma:migrate": {
+      "cache": false,
+      "persistent": false
+    },
+    "prisma:generate": {
+      "cache": false,
+      "persistent": false
+    }
+  }
+}

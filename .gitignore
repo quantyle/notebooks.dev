@@ -1,0 +1,9 @@
+.venv
+.idea
+.turbo
+.dist
+node_modules
+dist
+build
+db.sqlite3
+

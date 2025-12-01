@@ -1,0 +1,37 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+// https://vuetifyjs.com/features/sass-variables/`
+// @use 'vuetify/settings' with (
+//   $color-pack: false
+// );
+/* Load the font tiptap first (optional but convenient) */
+@use 'sass:meta';
+/* Tell Vuetify to use your font for the whole app */
+@use 'vuetify/settings' with (
+  $body-font-family: 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace'
+);
+
+@use '@fontsource-variable/jetbrains-mono';
+
+/* ---- Base theme tokens (tweak to taste) ---- */
+:root {
+  /* master hue used to derive tints/shades */
+  --hue: 220; /* 0–360, e.g. 220 is a VS Code-ish blue */
+
+  /* brand / accent */
+  --primary: hsl(var(--hue), 85%, 55%);
+  --primary-l: hsl(var(--hue), 85%, 65%); /* lighter */
+  --primary-d: hsl(var(--hue), 85%, 45%); /* darker */
+
+  /* paper / page colors used by views */
+  --white: hsl(0 0% 100%);
+  --white-d: hsl(0 0% 96%); /* slightly darker “paper” */
+
+  /* optional background/foreground tokens if you use them elsewhere */
+  --bg: hsl(var(--hue), 10%, 98%);
+  --fg: hsl(var(--hue), 10%, 12%);
+}

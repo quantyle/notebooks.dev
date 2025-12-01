@@ -1,0 +1,17 @@
+{
+  "name": "@notebooks.dev/api-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/client.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --noEmit",
+    "build:api": "orval --config orval.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
