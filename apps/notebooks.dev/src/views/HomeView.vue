@@ -190,10 +190,24 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+  import { getNotebookAPI } from '@notebooks.dev/api-client/lib/client'
+  import { computed, onMounted, ref } from 'vue'
   import { useRouter } from 'vue-router'
   import FeaturedBanner from '@/components/FeaturedBanner.vue'
   import NotebookCard from '@/components/NotebookCard.vue'
+
+  const api = getNotebookAPI()
+  const loading = ref(false)
+
+  onMounted(async () => {
+    loading.value = true
+    try {
+      const res = await api.getNotebooks()
+      console.log(res)
+    } finally {
+      loading.value = false
+    }
+  })
 
   const router = useRouter()
   const searchQuery = ref('')
