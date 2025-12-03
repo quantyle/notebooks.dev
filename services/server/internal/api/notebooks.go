@@ -61,12 +61,23 @@ func CreateNotebook(c *gin.Context) {
 		IsPublic      bool     `json:"isPublic"`
 	}
 
+	// check if workspace id exists
+	if body.WorkspaceID != nil {
+		var ws models.Workspace
+		if err := db.DB.First(&ws, "id = ?", *body.WorkspaceID).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "workspaceId does not exist",
+			})
+			return
+		}
+	}
+
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	note := models.Notebook{
+	notebook := models.Notebook{
 		ID:              GenerateID(),
 		Title:           body.Title,
 		Description:     body.Description,
@@ -79,6 +90,6 @@ func CreateNotebook(c *gin.Context) {
 		UpdatedAt:       time.Now().UnixMilli(),
 	}
 
-	db.DB.Create(&note)
-	c.JSON(http.StatusCreated, note)
+	db.DB.Create(&notebook)
+	c.JSON(http.StatusCreated, notebook)
 }

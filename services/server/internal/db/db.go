@@ -25,7 +25,6 @@ func Connect() {
 		&models.Category{},
 		&models.Notebook{},
 		&models.Page{},
-		&models.NotebookCategory{},
 	)
 
 	if err != nil {
