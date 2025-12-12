@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"server/internal/db"
 	"server/internal/models"
+	"server/internal/util"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -78,13 +79,13 @@ func CreateNotebook(c *gin.Context) {
 	}
 
 	notebook := models.Notebook{
-		ID:              GenerateID(),
+		ID:              util.GenerateID(),
 		Title:           body.Title,
 		Description:     body.Description,
 		OwnerID:         body.OwnerID,
 		WorkspaceID:     body.WorkspaceID,
-		Tags:            datatypes.JSON([]byte(JsonArray(body.Tags))),
-		CollaboratorIds: datatypes.JSON([]byte(JsonArray(body.Collaborators))),
+		Tags:            datatypes.JSON([]byte(util.JsonArray(body.Tags))),
+		CollaboratorIds: datatypes.JSON([]byte(util.JsonArray(body.Collaborators))),
 		IsPublic:        body.IsPublic,
 		CreatedAt:       time.Now().UnixMilli(),
 		UpdatedAt:       time.Now().UnixMilli(),

@@ -30,9 +30,7 @@ func main() {
 	// Gin engine
 	r := gin.Default()
 
-	// --------------------------------------------------
-	// Enable CORS
-	// --------------------------------------------------
+	// enable CORS
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000", "http://127.0.0.1:3000"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -40,25 +38,18 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// --------------------------------------------------
-	// Register routes
-	// --------------------------------------------------
+	// register routes
 	routes.RegisterWorkspaceRoutes(r)
-	routes.RegisterCategoryRoutes(r)
 	routes.RegisterNotebookRoutes(r)
 	routes.RegisterPageRoutes(r)
 
-	// --------------------------------------------------
-	// Serve OpenAPI JSON
-	// --------------------------------------------------
+	// serve openapi
 	r.GET("/openapi.json", func(c *gin.Context) {
 		c.Writer.Header().Set("Content-Type", "application/json")
 		c.String(200, docs.SwaggerInfo.ReadDoc())
 	})
 
-	// --------------------------------------------------
-	// Serve Swagger UI
-	// --------------------------------------------------
+	// serve swagger docs
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Start server

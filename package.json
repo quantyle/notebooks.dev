@@ -5,9 +5,7 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "prisma:init": "turbo prisma:init",
-    "prisma:migrate": "turbo prisma:migrate",
-    "prisma:generate": "turbo prisma:generate"
+    "build:api": "turbo build:api"
   },
   "workspaces": [
     "apps/*",
@@ -43,13 +41,14 @@
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.9.3",
     "@types/swagger-jsdoc": "^6.0.4",
-    "concurrently": "^9.2.0",
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.10",
     "orval": "^7.10.0",
     "prisma-zod-generator": "^1.1.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "wait-on": "^9.0.3"
   }
 }

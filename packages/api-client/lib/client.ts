@@ -5,16 +5,73 @@
  * REST API for notebooks, pages, categories, and workspaces.
  * OpenAPI spec version: 1.0
  */
-import type {
-  ModelsCategory,
-  ModelsNotebook,
-  ModelsPage,
-  ModelsWorkspace,
-  PostNotebooksIdPagesBody,
-  PostWorkspacesBody
-} from './model';
-
 import { customAxios } from './custom-axios';
+/**
+ * Notebook category with metadata.
+ */
+export interface ModelsCategory {
+  color?: string;
+  createdAt?: number;
+  description?: string;
+  id?: string;
+  name?: string;
+  updatedAt?: number;
+  workspaceId?: string;
+}
+
+/**
+ * A notebook containing pages.
+ */
+export interface ModelsNotebook {
+  collaboratorIds?: string[];
+  createdAt?: number;
+  description?: string;
+  id?: string;
+  isPublic?: boolean;
+  lastAccessedAt?: number;
+  ownerId?: string;
+  tags?: string[];
+  title?: string;
+  updatedAt?: number;
+  workspaceId?: string;
+}
+
+export type ModelsPageContent = { [key: string]: unknown };
+
+/**
+ * A content page inside a notebook.
+ */
+export interface ModelsPage {
+  content?: ModelsPageContent;
+  createdAt?: number;
+  id?: string;
+  lastExecutedAt?: number;
+  notebookId?: string;
+  order?: number;
+  title?: string;
+  updatedAt?: number;
+}
+
+/**
+ * A workspace that contains notebooks and categories.
+ */
+export interface ModelsWorkspace {
+  categories?: ModelsCategory[];
+  id?: string;
+  notebooks?: ModelsNotebook[];
+  userId?: string;
+}
+
+export type GetNotebooksId404 = {[key: string]: string};
+
+export type PostNotebooksIdPagesBody = { [key: string]: unknown };
+
+export type PostNotebooksIdPages400 = {[key: string]: string};
+
+export type GetPagesId404 = {[key: string]: string};
+
+export type PostWorkspacesBody = {[key: string]: string};
+
 export const getNotebookAPI = () => {
 /**
  * @summary List categories

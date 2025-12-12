@@ -3,7 +3,6 @@ module.exports = {
     output: {
       mode: "single",
       target: "./lib/client.ts",
-      schemas: "./lib/model",
       client: "axios",
       override: {
         mutator: {

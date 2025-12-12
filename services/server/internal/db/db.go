@@ -22,7 +22,6 @@ func Connect() {
 	// Auto-migrate all models
 	err = db.AutoMigrate(
 		&models.Workspace{},
-		&models.Category{},
 		&models.Notebook{},
 		&models.Page{},
 	)

@@ -17,15 +17,7 @@
       "cache": false,
       "persistent": true
     },
-    "prisma:init": {
-      "cache": false,
-      "persistent": false
-    },
-    "prisma:migrate": {
-      "cache": false,
-      "persistent": false
-    },
-    "prisma:generate": {
+    "build:api": {
       "cache": false,
       "persistent": false
     }
