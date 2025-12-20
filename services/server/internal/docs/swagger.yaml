@@ -1,43 +1,41 @@
 basePath: /
 definitions:
-  models.Category:
-    description: Notebook category with metadata.
+  dto.CreateNotebookRequest:
+    description: A notebook containing pages.
     properties:
-      color:
-        example: '#FF9900'
-        type: string
-      createdAt:
-        example: 1700000000000
-        type: integer
+      collaboratorIds:
+        items:
+          type: string
+        type: array
       description:
-        example: Category for coding notes
         type: string
-      id:
-        example: cat-123
+      isPublic:
+        type: boolean
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        minLength: 1
         type: string
-      name:
-        example: Programming
-        type: string
-      updatedAt:
-        example: 1700000500000
-        type: integer
       workspaceId:
-        example: workspace-123
         type: string
+    required:
+    - title
     type: object
   models.Notebook:
     description: A notebook containing pages.
     properties:
       collaboratorIds:
         example:
-        - '["user-1"'
-        - '"user-2"]'
+        - user-1
+        - user-2
         items:
           type: string
         type: array
       createdAt:
-        example: 1700000000000
-        type: integer
+        description: Timestamps (managed by GORM)
+        type: string
       description:
         example: Study notes
         type: string
@@ -48,15 +46,20 @@ definitions:
         example: false
         type: boolean
       lastAccessedAt:
-        example: 1700000200000
-        type: integer
+        type: string
       ownerId:
         example: user-123
         type: string
+      pages:
+        description: Has Many
+        items:
+          $ref: '#/definitions/models.Page'
+        type: array
       tags:
+        description: JSON fields (let GORM marshal automatically)
         example:
-        - '["go"'
-        - '"api"]'
+        - go
+        - api
         items:
           type: string
         type: array
@@ -64,10 +67,9 @@ definitions:
         example: My Notebook
         type: string
       updatedAt:
-        example: 1700000000000
-        type: integer
+        type: string
       workspaceId:
-        example: workspace-123
+        description: Relationships
         type: string
     type: object
   models.Page:
@@ -85,7 +87,7 @@ definitions:
         example: 1700002000000
         type: integer
       notebookId:
-        example: nbk-123
+        description: relationships
         type: string
       order:
         example: 1
@@ -100,10 +102,6 @@ definitions:
   models.Workspace:
     description: A workspace that contains notebooks and categories.
     properties:
-      categories:
-        items:
-          $ref: '#/definitions/models.Category'
-        type: array
       id:
         example: workspace-123
         type: string
@@ -122,40 +120,6 @@ info:
   title: Notebook API
   version: "1.0"
 paths:
-  /categories:
-    get:
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Category'
-            type: array
-      summary: List categories
-      tags:
-      - categories
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Category payload
-        in: body
-        name: category
-        required: true
-        schema:
-          $ref: '#/definitions/models.Category'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Category'
-      summary: Create a category
-      tags:
-      - categories
   /notebooks:
     get:
       produces:
@@ -174,12 +138,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Notebook payload
+      - description: Create notebook payload
         in: body
         name: notebook
         required: true
         schema:
-          $ref: '#/definitions/models.Notebook'
+          $ref: '#/definitions/dto.CreateNotebookRequest'
       produces:
       - application/json
       responses:
@@ -187,6 +151,18 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Notebook'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Create a notebook
       tags:
       - notebooks

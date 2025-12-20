@@ -3,12 +3,12 @@ package api
 import (
 	"net/http"
 	"server/internal/db"
+	"server/internal/dto"
 	"server/internal/models"
 	"server/internal/util"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
 // GetNotebooks godoc
@@ -18,9 +18,23 @@ import (
 // @Success 200 {array} models.Notebook
 // @Router /notebooks [get]
 func GetNotebooks(c *gin.Context) {
-	var notes []models.Notebook
-	db.DB.Preload("Pages").Find(&notes)
-	c.JSON(http.StatusOK, notes)
+	var notebooks []models.Notebook
+
+	query := db.DB
+
+	// Optional preload to avoid over-fetching
+	if c.Query("includePages") == "true" {
+		query = query.Preload("Pages")
+	}
+
+	if err := query.Find(&notebooks).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to fetch notebooks",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, notebooks)
 }
 
 // GetNotebook godoc
@@ -33,14 +47,27 @@ func GetNotebooks(c *gin.Context) {
 // @Router /notebooks/{id} [get]
 func GetNotebook(c *gin.Context) {
 	id := c.Param("id")
-	var note models.Notebook
+	var notebook models.Notebook
 
-	if err := db.DB.Preload("Pages").First(&note, "id = ?", id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Not found"})
+	query := db.DB
+
+	if c.Query("includePages") == "true" {
+		query = query.Preload("Pages")
+	}
+
+	if err := query.First(&notebook, "id = ?", id).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "notebook not found"})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to fetch notebook",
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, note)
+	c.JSON(http.StatusOK, notebook)
 }
 
 // CreateNotebook godoc
@@ -48,49 +75,65 @@ func GetNotebook(c *gin.Context) {
 // @Tags notebooks
 // @Accept json
 // @Produce json
-// @Param notebook body models.Notebook true "Notebook payload"
+// @Param notebook body dto.CreateNotebookRequest true "Create notebook payload"
 // @Success 201 {object} models.Notebook
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
 // @Router /notebooks [post]
 func CreateNotebook(c *gin.Context) {
-	var body struct {
-		Title         string   `json:"title"`
-		Description   *string  `json:"description"`
-		OwnerID       string   `json:"ownerId"`
-		WorkspaceID   *string  `json:"workspaceId"`
-		Tags          []string `json:"tags"`
-		Collaborators []string `json:"collaboratorIds"`
-		IsPublic      bool     `json:"isPublic"`
+	var body dto.CreateNotebookRequest
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
 
-	// check if workspace id exists
+	// 🔐 OwnerID must come from auth context, not client input
+	ownerID := c.GetString("userID")
+	if ownerID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "unauthorized",
+		})
+		return
+	}
+
+	// Validate workspace existence if provided
 	if body.WorkspaceID != nil {
 		var ws models.Workspace
 		if err := db.DB.First(&ws, "id = ?", *body.WorkspaceID).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "workspaceId does not exist",
+			if err == gorm.ErrRecordNotFound {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": "workspaceId does not exist",
+				})
+				return
+			}
+
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "failed to validate workspace",
 			})
 			return
 		}
-	}
-
-	if err := c.BindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
 	}
 
 	notebook := models.Notebook{
 		ID:              util.GenerateID(),
 		Title:           body.Title,
 		Description:     body.Description,
-		OwnerID:         body.OwnerID,
+		OwnerID:         ownerID,
 		WorkspaceID:     body.WorkspaceID,
-		Tags:            datatypes.JSON([]byte(util.JsonArray(body.Tags))),
-		CollaboratorIds: datatypes.JSON([]byte(util.JsonArray(body.Collaborators))),
+		Tags:            body.Tags,            // let GORM marshal JSON
+		CollaboratorIDs: body.CollaboratorIDs, // proper Go naming
 		IsPublic:        body.IsPublic,
-		CreatedAt:       time.Now().UnixMilli(),
-		UpdatedAt:       time.Now().UnixMilli(),
 	}
 
-	db.DB.Create(&notebook)
+	if err := db.DB.Create(&notebook).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "failed to create notebook",
+		})
+		return
+	}
+
 	c.JSON(http.StatusCreated, notebook)
 }

@@ -15,59 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/categories": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "categories"
-                ],
-                "summary": "List categories",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Category"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "categories"
-                ],
-                "summary": "Create a category",
-                "parameters": [
-                    {
-                        "description": "Category payload",
-                        "name": "category",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Category"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.Category"
-                        }
-                    }
-                }
-            }
-        },
         "/notebooks": {
             "get": {
                 "produces": [
@@ -102,12 +49,12 @@ const docTemplate = `{
                 "summary": "Create a notebook",
                 "parameters": [
                     {
-                        "description": "Notebook payload",
+                        "description": "Create notebook payload",
                         "name": "notebook",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Notebook"
+                            "$ref": "#/definitions/dto.CreateNotebookRequest"
                         }
                     }
                 ],
@@ -116,6 +63,24 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/models.Notebook"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -357,37 +322,37 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Category": {
-            "description": "Notebook category with metadata.",
+        "dto.CreateNotebookRequest": {
+            "description": "A notebook containing pages.",
             "type": "object",
+            "required": [
+                "title"
+            ],
             "properties": {
-                "color": {
-                    "type": "string",
-                    "example": "#FF9900"
-                },
-                "createdAt": {
-                    "type": "integer",
-                    "example": 1700000000000
+                "collaboratorIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "description": {
-                    "type": "string",
-                    "example": "Category for coding notes"
+                    "type": "string"
                 },
-                "id": {
-                    "type": "string",
-                    "example": "cat-123"
+                "isPublic": {
+                    "type": "boolean"
                 },
-                "name": {
-                    "type": "string",
-                    "example": "Programming"
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
-                "updatedAt": {
-                    "type": "integer",
-                    "example": 1700000500000
+                "title": {
+                    "type": "string",
+                    "minLength": 1
                 },
                 "workspaceId": {
-                    "type": "string",
-                    "example": "workspace-123"
+                    "type": "string"
                 }
             }
         },
@@ -401,13 +366,13 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"user-1\"",
-                        "\"user-2\"]"
+                        "user-1",
+                        "user-2"
                     ]
                 },
                 "createdAt": {
-                    "type": "integer",
-                    "example": 1700000000000
+                    "description": "Timestamps (managed by GORM)",
+                    "type": "string"
                 },
                 "description": {
                     "type": "string",
@@ -422,21 +387,28 @@ const docTemplate = `{
                     "example": false
                 },
                 "lastAccessedAt": {
-                    "type": "integer",
-                    "example": 1700000200000
+                    "type": "string"
                 },
                 "ownerId": {
                     "type": "string",
                     "example": "user-123"
                 },
+                "pages": {
+                    "description": "Has Many",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Page"
+                    }
+                },
                 "tags": {
+                    "description": "JSON fields (let GORM marshal automatically)",
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "example": [
-                        "[\"go\"",
-                        "\"api\"]"
+                        "go",
+                        "api"
                     ]
                 },
                 "title": {
@@ -444,12 +416,11 @@ const docTemplate = `{
                     "example": "My Notebook"
                 },
                 "updatedAt": {
-                    "type": "integer",
-                    "example": 1700000000000
+                    "type": "string"
                 },
                 "workspaceId": {
-                    "type": "string",
-                    "example": "workspace-123"
+                    "description": "Relationships",
+                    "type": "string"
                 }
             }
         },
@@ -473,8 +444,8 @@ const docTemplate = `{
                     "example": 1700002000000
                 },
                 "notebookId": {
-                    "type": "string",
-                    "example": "nbk-123"
+                    "description": "relationships",
+                    "type": "string"
                 },
                 "order": {
                     "type": "integer",
@@ -494,12 +465,6 @@ const docTemplate = `{
             "description": "A workspace that contains notebooks and categories.",
             "type": "object",
             "properties": {
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Category"
-                    }
-                },
                 "id": {
                     "type": "string",
                     "example": "workspace-123"

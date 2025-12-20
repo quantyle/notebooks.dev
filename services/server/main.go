@@ -57,7 +57,7 @@ func main() {
 }
 
 func generateSwagger() {
-	cmd := exec.Command("swag", "init", "-g", "cmd/server.go", "-o", "internal/docs")
+	cmd := exec.Command("swag", "init", "-g", "main.go", "-o", "internal/docs")
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {

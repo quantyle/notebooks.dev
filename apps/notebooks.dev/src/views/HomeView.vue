@@ -24,7 +24,6 @@
 
   function addItem2 () {
     console.log('hello world')
-
     const notebook: ModelsNotebook = {
       collaboratorIds: [],
       createdAt: 0,

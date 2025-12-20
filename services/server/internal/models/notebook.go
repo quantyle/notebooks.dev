@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/datatypes"
+import (
+	"time"
+)
 
 // Notebook is the main collection of pages.
 // @Description A notebook containing pages.
@@ -9,19 +11,22 @@ type Notebook struct {
 	Title       string  `json:"title" example:"My Notebook"`
 	Description *string `json:"description,omitempty" example:"Study notes"`
 
-	Tags            datatypes.JSON `json:"tags" swaggertype:"array,string" example:"[\"go\",\"api\"]"`
-	CollaboratorIds datatypes.JSON `json:"collaboratorIds" swaggertype:"array,string" example:"[\"user-1\",\"user-2\"]"`
+	// JSON fields (let GORM marshal automatically)
+	Tags            []string `json:"tags" gorm:"type:jsonb" swaggertype:"array,string" example:"go,api"`
+	CollaboratorIDs []string `json:"collaboratorIds" gorm:"type:jsonb" swaggertype:"array,string" example:"user-1,user-2"`
 
-	OwnerID        string `json:"ownerId" example:"user-123"`
-	IsPublic       bool   `json:"isPublic" example:"false"`
-	CreatedAt      int64  `json:"createdAt" example:"1700000000000"`
-	UpdatedAt      int64  `json:"updatedAt" example:"1700000000000"`
-	LastAccessedAt *int64 `json:"lastAccessedAt,omitempty" example:"1700000200000"`
+	OwnerID  string `json:"ownerId" example:"user-123"`
+	IsPublic bool   `json:"isPublic" example:"false"`
 
-	// relationships
-	WorkspaceID *string   `gorm:"index"` // pointer is nullable so notebooks dont need to be in a workspace
-	Workspace   Workspace `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	// Timestamps (managed by GORM)
+	CreatedAt      time.Time  `json:"createdAt"`
+	UpdatedAt      time.Time  `json:"updatedAt"`
+	LastAccessedAt *time.Time `json:"lastAccessedAt,omitempty"`
 
-	// Has Many relation
-	Pages []Page `json:"pages" gorm:"foreignKey:NotebookID"`
+	// Relationships
+	WorkspaceID *string    `json:"workspaceId,omitempty" gorm:"index"`
+	Workspace   *Workspace `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+
+	// Has Many
+	Pages []Page `json:"pages,omitempty" gorm:"foreignKey:NotebookID"`
 }
