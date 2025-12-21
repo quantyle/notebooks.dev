@@ -2,6 +2,7 @@ package routes
 
 import (
 	"server/internal/api"
+	"server/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,9 +10,12 @@ import (
 // RegisterNotebookRoutes registers notebook-related endpoints.
 func RegisterNotebookRoutes(r *gin.Engine) {
 	group := r.Group("/notebooks")
-	{
-		group.GET("", api.GetNotebooks)
-		group.GET("/:id", api.GetNotebook)
-		group.POST("", api.CreateNotebook)
-	}
+
+	// use dev auth middleware
+	group.Use(middleware.DevAuthMiddleware())
+
+	group.GET("", api.GetNotebooks)
+	group.GET("/:id", api.GetNotebook)
+	group.POST("", api.CreateNotebook)
+
 }
