@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import type {
-    ModelsNotebook } from '@notebooks.dev/api-client/lib/client'
+import type {
+  DtoCreateNotebookRequest, ModelsNotebook,
+} from '@notebooks.dev/api-client/lib/client'
   import {
     getNotebookAPI,
   } from '@notebooks.dev/api-client/lib/client'
@@ -23,20 +24,17 @@
   })
 
   function addItem2 () {
-    console.log('hello world')
-    const notebook: ModelsNotebook = {
+    const payload: DtoCreateNotebookRequest = {
       collaboratorIds: [],
-      createdAt: 0,
       description: '',
-      id: '',
       isPublic: true,
-      lastAccessedAt: 0,
-      ownerId: '',
       tags: [],
-      title: '',
-      updatedAt: 0,
-      workspaceId: '',
+      title: 'sample notebook',
+      // workspaceId: '',
     }
+
+    console.log('creating notebook with payload', payload)
+    api.postNotebooks(payload).then((resp: ModelsNotebook) => console.log(resp)).catch(err => console.log('error occured', err))
   }
 
   const router = useRouter()

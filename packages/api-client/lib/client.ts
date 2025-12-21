@@ -7,15 +7,15 @@
  */
 import { customAxios } from './custom-axios';
 /**
- * Notebook category with metadata.
+ * A notebook containing pages.
  */
-export interface ModelsCategory {
-  color?: string;
-  createdAt?: number;
+export interface DtoCreateNotebookRequest {
+  collaboratorIds?: string[];
   description?: string;
-  id?: string;
-  name?: string;
-  updatedAt?: number;
+  isPublic?: boolean;
+  tags?: string[];
+  /** @minLength 1 */
+  title: string;
   workspaceId?: string;
 }
 
@@ -24,15 +24,20 @@ export interface ModelsCategory {
  */
 export interface ModelsNotebook {
   collaboratorIds?: string[];
-  createdAt?: number;
+  /** Timestamps (managed by GORM) */
+  createdAt?: string;
   description?: string;
   id?: string;
   isPublic?: boolean;
-  lastAccessedAt?: number;
+  lastAccessedAt?: string;
   ownerId?: string;
+  /** Has Many */
+  pages?: ModelsPage[];
+  /** JSON fields (let GORM marshal automatically) */
   tags?: string[];
   title?: string;
-  updatedAt?: number;
+  updatedAt?: string;
+  /** Relationships */
   workspaceId?: string;
 }
 
@@ -46,6 +51,7 @@ export interface ModelsPage {
   createdAt?: number;
   id?: string;
   lastExecutedAt?: number;
+  /** relationships */
   notebookId?: string;
   order?: number;
   title?: string;
@@ -56,11 +62,14 @@ export interface ModelsPage {
  * A workspace that contains notebooks and categories.
  */
 export interface ModelsWorkspace {
-  categories?: ModelsCategory[];
   id?: string;
   notebooks?: ModelsNotebook[];
   userId?: string;
 }
+
+export type PostNotebooks400 = {[key: string]: string};
+
+export type PostNotebooks401 = {[key: string]: string};
 
 export type GetNotebooksId404 = {[key: string]: string};
 
@@ -73,32 +82,6 @@ export type GetPagesId404 = {[key: string]: string};
 export type PostWorkspacesBody = {[key: string]: string};
 
 export const getNotebookAPI = () => {
-/**
- * @summary List categories
- */
-const getCategories = (
-    
- ) => {
-      return customAxios<ModelsCategory[]>(
-      {url: `/categories`, method: 'GET'
-    },
-      );
-    }
-  
-/**
- * @summary Create a category
- */
-const postCategories = (
-    modelsCategory: ModelsCategory,
- ) => {
-      return customAxios<ModelsCategory>(
-      {url: `/categories`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: modelsCategory
-    },
-      );
-    }
-  
 /**
  * @summary List all notebooks
  */
@@ -115,12 +98,12 @@ const getNotebooks = (
  * @summary Create a notebook
  */
 const postNotebooks = (
-    modelsNotebook: ModelsNotebook,
+    dtoCreateNotebookRequest: DtoCreateNotebookRequest,
  ) => {
       return customAxios<ModelsNotebook>(
       {url: `/notebooks`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: modelsNotebook
+      data: dtoCreateNotebookRequest
     },
       );
     }
@@ -218,9 +201,7 @@ const postWorkspaces = (
       );
     }
   
-return {getCategories,postCategories,getNotebooks,postNotebooks,getNotebooksId,getNotebooksIdPages,postNotebooksIdPages,getPages,getPagesId,getWorkspaces,postWorkspaces}};
-export type GetCategoriesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNotebookAPI>['getCategories']>>>
-export type PostCategoriesResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNotebookAPI>['postCategories']>>>
+return {getNotebooks,postNotebooks,getNotebooksId,getNotebooksIdPages,postNotebooksIdPages,getPages,getPagesId,getWorkspaces,postWorkspaces}};
 export type GetNotebooksResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNotebookAPI>['getNotebooks']>>>
 export type PostNotebooksResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNotebookAPI>['postNotebooks']>>>
 export type GetNotebooksIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getNotebookAPI>['getNotebooksId']>>>
