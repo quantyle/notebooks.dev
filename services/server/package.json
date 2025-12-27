@@ -1,9 +1,0 @@
-{
-  "name": "server",
-  "version": "1.0.0",
-  "author": "Randy Lopez",
-  "scripts": {
-    "dev": "go run main.go",
-    "build": "go build -o build/main main.go"
-  }
-}

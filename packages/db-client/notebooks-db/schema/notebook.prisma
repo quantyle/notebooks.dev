@@ -1,7 +1,7 @@
 model Notebook {
-  id      Int    @id @default(autoincrement())
-  title   String
-  content String
-  userId  String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          Int       @id @default(autoincrement())
+  name        String
+  workspaceId Int
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  pages       Page[]
 }
