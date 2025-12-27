@@ -1,0 +1,19 @@
+{
+  "name": "@notebooks.dev/db-client",
+  "version": "1.0.0",
+  "scripts": {
+    "prisma:migrate:notebooks-db": "npx prisma migrate dev --name init --schema=./notebooks-db/schema",
+    "prisma:generate:notebooks-db": " npx prisma generate --schema=./notebooks-db/schema",
+    "prisma:init": "npm-run-all prisma:migrate:* prisma:generate:*",
+    "prisma:migrate": "npm-run-all prisma:migrate:*",
+    "prisma:generate": "npm-run-all prisma:generate:*"
+  },
+  "exports": {
+    "./notebooks-db": "./build/notebooks-db/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "notebooks-db": ["./build/notebooks-db/index.d.ts"]
+    }
+  }
+}

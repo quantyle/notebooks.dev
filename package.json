@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "build:api": "turbo build:api"
+    "build:api": "turbo build:api",
+    "prisma:init": "turbo prisma:init",
+    "prisma:migrate": "turbo prisma:migrate",
+    "prisma:generate": "turbo prisma:generate"
   },
   "workspaces": [
     "apps/*",
@@ -34,7 +37,8 @@
     "tsoa": "^6.6.0",
     "turbo": "^2.5.5",
     "vuetify": "^3.11.0",
-    "zod-openapi": "^5.3.0"
+    "zod-openapi": "^5.3.0",
+    "@notebooks.dev/db-client": "^1.0.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",

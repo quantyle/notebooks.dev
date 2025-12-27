@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"server/internal/db"
 	"server/internal/dto"
@@ -56,7 +57,7 @@ func GetNotebook(c *gin.Context) {
 	}
 
 	if err := query.First(&notebook, "id = ?", id).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "notebook not found"})
 			return
 		}
@@ -103,7 +104,7 @@ func CreateNotebook(c *gin.Context) {
 	if body.WorkspaceID != nil {
 		var ws models.Workspace
 		if err := db.DB.First(&ws, "id = ?", *body.WorkspaceID).Error; err != nil {
-			if err == gorm.ErrRecordNotFound {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"error": "workspaceId does not exist",
 				})
