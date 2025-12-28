@@ -7,6 +7,22 @@
       width="320"
     >
       <v-list density="compact" nav>
+        <!-- Home -->
+        <v-list-item
+          class="mb-1"
+          :disabled="route.path === '/'"
+          @click="goHome"
+        >
+          <template #prepend>
+            <v-icon icon="mdi-home-outline" />
+          </template>
+          <v-list-item-title>
+            Home
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-divider class="mb-2" />
+
         <!-- Workspaces -->
         <v-list-group
           v-for="workspace in store.workspaces"
@@ -111,7 +127,7 @@
 
     <!-- Main Content -->
     <main class="content">
-      <!-- Header -->
+      <!-- Header with navigation -->
       <div class="content-header">
         <v-btn
           :disabled="!canGoBack"
@@ -123,6 +139,7 @@
         </v-btn>
 
         <v-btn
+          :disabled="!canGoForward"
           icon
           variant="text"
           @click="goForward"
@@ -161,7 +178,6 @@
       <div v-else-if="selectedPage" class="page-content">
         <h1 class="mb-4">{{ selectedPage.title }}</h1>
 
-        <!-- Placeholder for Tiptap -->
         <pre class="content-preview">
 {{ JSON.stringify(selectedPage.content, null, 2) }}
         </pre>
@@ -176,13 +192,51 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useNotebookStore } from '@/stores/notebook'
 
   const store = useNotebookStore()
   const router = useRouter()
   const route = useRoute()
+
+  /* ---------- In-app navigation history ---------- */
+  const historyStack = ref<string[]>([])
+  const historyIndex = ref(-1)
+
+  watch(
+    () => route.fullPath,
+    path => {
+      if (historyStack.value[historyIndex.value] === path) return
+
+      historyStack.value = historyStack.value.slice(0, historyIndex.value + 1)
+      historyStack.value.push(path)
+      historyIndex.value++
+    },
+    { immediate: true },
+  )
+
+  const canGoBack = computed(() => historyIndex.value > 0)
+  const canGoForward = computed(
+    () => historyIndex.value < historyStack.value.length - 1,
+  )
+
+  function goBack () {
+    if (!canGoBack.value) return
+    historyIndex.value--
+    router.push(historyStack.value[historyIndex.value])
+  }
+
+  function goForward () {
+    if (!canGoForward.value) return
+    historyIndex.value++
+    router.push(historyStack.value[historyIndex.value])
+  }
+
+  /* ---------- Home ---------- */
+  function goHome () {
+    router.push('/')
+  }
 
   /* ---------- Route-driven create mode ---------- */
   type CreateMode
@@ -197,17 +251,11 @@
     }
 
     if (route.path.startsWith('/create/notebook/')) {
-      return {
-        type: 'notebook',
-        workspaceId: Number(route.params.workspaceId),
-      }
+      return { type: 'notebook', workspaceId: Number(route.params.workspaceId) }
     }
 
     if (route.path.startsWith('/create/page/')) {
-      return {
-        type: 'page',
-        notebookId: Number(route.params.notebookId),
-      }
+      return { type: 'page', notebookId: Number(route.params.notebookId) }
     }
 
     return null
@@ -215,18 +263,6 @@
 
   const formName = ref('')
 
-  /* ---------- Navigation ---------- */
-  const canGoBack = computed(() => route.path !== '/')
-
-  function goBack () {
-    if (canGoBack.value) router.back()
-  }
-
-  function goForward () {
-    router.forward()
-  }
-
-  /* ---------- Create starters ---------- */
   function startCreateWorkspace () {
     formName.value = ''
     router.push('/create/workspace')
@@ -244,27 +280,25 @@
 
   function cancelCreate () {
     formName.value = ''
-    router.back()
+    goBack()
   }
 
-  /* ---------- Confirm create ---------- */
   async function confirmCreate () {
     if (!createMode.value || !formName.value) return
 
     if (createMode.value.type === 'workspace') {
       await store.createWorkspace(formName.value)
-      router.push('/')
     }
 
     if (createMode.value.type === 'notebook') {
       await store.createNotebook(createMode.value.workspaceId, formName.value)
-      router.push('/')
     }
 
     if (createMode.value.type === 'page') {
       await store.createPage(createMode.value.notebookId, formName.value)
-      router.push('/')
     }
+
+    router.push('/')
   }
 
   /* ---------- Page selection ---------- */
