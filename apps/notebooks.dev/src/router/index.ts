@@ -2,12 +2,14 @@ import type { RouteRecordRaw } from 'vue-router'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import HomeView from '@/views/HomeView.vue'
-import NotebookView from '@/views/NotebookView.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: HomeView },
-  { path: '/notebook/:id', component: NotebookView, props: true },
-  // { path: '/notebook', component: NotebookView, props: route => ({ id: route.query.id }) },
+  { path: '/pages/:id', component: HomeView },
+
+  { path: '/create/workspace', component: HomeView },
+  { path: '/create/notebook/:workspaceId', component: HomeView },
+  { path: '/create/page/:notebookId', component: HomeView },
 ]
 
 const router = createRouter({

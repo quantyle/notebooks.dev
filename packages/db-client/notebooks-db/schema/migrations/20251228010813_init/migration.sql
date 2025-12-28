@@ -10,7 +10,7 @@ CREATE TABLE "Notebook" (
 CREATE TABLE "Page" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "title" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
+    "content" JSONB NOT NULL,
     "notebookId" INTEGER NOT NULL,
     CONSTRAINT "Page_notebookId_fkey" FOREIGN KEY ("notebookId") REFERENCES "Notebook" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

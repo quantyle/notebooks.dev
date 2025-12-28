@@ -1,7 +1,7 @@
 model Page {
   id         Int      @id @default(autoincrement())
   title      String
-  content    String
+  content    Json
   notebookId Int
   notebook   Notebook @relation(fields: [notebookId], references: [id])
 }
