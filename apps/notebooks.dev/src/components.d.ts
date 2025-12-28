@@ -17,6 +17,7 @@ declare module 'vue' {
     Editor: typeof import('./components/Editor.vue')['default']
     EditorToolbar: typeof import('./components/EditorToolbar.vue')['default']
     FeaturedBanner: typeof import('./components/FeaturedBanner.vue')['default']
+    NavToolbar: typeof import('./components/NavToolbar.vue')['default']
     NotebookCard: typeof import('./components/NotebookCard.vue')['default']
     Orb: typeof import('./components/Orb.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
