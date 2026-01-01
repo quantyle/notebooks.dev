@@ -134,18 +134,9 @@
             </template>
 
             <v-card class="pa-2 overflow-menu">
-              <v-text-field
-                ref="overflowSearchRef"
-                v-model="searchQuery"
-                autofocus
-                density="compact"
-                hide-details
-                label="Search tools…"
-                variant="outlined"
-              />
               <div class="d-flex align-center flex-wrap mt-2">
                 <!-- Overflow tools: also support menu tools -->
-                <template v-for="tool in filteredOverflowTools" :key="tool.name">
+                <template v-for="tool in overflowTools" :key="tool.name">
                   <v-menu v-if="tool.menu" location="bottom">
                     <template #activator="{ props: menuProps }">
                       <v-btn
@@ -203,7 +194,6 @@
     PhArrowUUpRight,
     PhCodeBlock,
     PhDotsThreeVertical,
-    PhEraser,
     PhHighlighterCircle,
     PhImageSquare,
     PhLinkSimple,
@@ -361,13 +351,11 @@
   const visibleTools = ref<any[]>([])
   const overflowTools = ref<any[]>([])
   const overflowOpen = ref(false)
-  const searchQuery = ref('')
   const overflowSearchRef = ref()
 
   // focus search when menu opens
   watch(overflowOpen, async open => {
     if (open) {
-      searchQuery.value = ''
       await nextTick()
       try {
         (overflowSearchRef.value as any)?.focus?.()
@@ -441,9 +429,6 @@
     overflowTools.value = tempOverflow
   }
 
-  const filteredOverflowTools = computed(() =>
-    overflowTools.value.filter(t => t.title.toLowerCase().includes(searchQuery.value.toLowerCase())),
-  )
 </script>
 
 <style scoped lang="scss">

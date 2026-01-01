@@ -8,7 +8,6 @@
       flat
       height="40"
     >
-      <v-app-bar-nav-icon class="d-md-none" rounded="0" @click="drawer = !drawer" />
       <v-btn class="ml-0 px-3" rounded="0" @click="router.push('/')">
         <v-img src="@/assets/notebook-logo-alt-lighter.svg" style="width: 150px" />
       </v-btn>
@@ -33,15 +32,6 @@
       </div>
     </v-app-bar>
 
-    <!-- Mobile Drawer -->
-    <v-navigation-drawer v-model="drawer" class="d-md-none" temporary>
-      <v-list>
-        <v-list-item v-for="item in navigation" :key="item.path" :to="item.path">
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
     <!-- Main Hero Workspace -->
     <v-main>
       <slot />
@@ -50,9 +40,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
   import { useRouter } from 'vue-router'
-  const drawer = ref(false)
   const router = useRouter()
 
   const navigation = [
@@ -83,9 +71,7 @@
   }
 }
 .home-container {
-  background-color: #eeeae3;
-  background-image: radial-gradient(rgba(35, 98, 77, 0.2) 1px, transparent 1px);
-  background-size: 24px 24px;
+  //background-color: #eeeae3;
   min-height: 100vh;
 }
 

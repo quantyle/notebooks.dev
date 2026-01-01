@@ -27,3 +27,7 @@ body {
 ::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+.resize-handle-horizontal { position: relative; width: 1px; background: rgb(var(--v-theme-border)); cursor: ew-resize !important; z-index: 1; }
+.resize-handle-horizontal::before { content: ""; position: absolute; top: -12px; bottom: -12px; left: -5px; right: -5px; cursor: inherit; z-index: -1; }
+.resize-handle-horizontal:hover { background: rgba(var(--v-theme-primary), 0.8); }

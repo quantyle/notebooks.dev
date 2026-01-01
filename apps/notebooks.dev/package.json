@@ -61,7 +61,7 @@
     "vue-tippy": "^6.7.1",
     "vuedraggable": "^4.1.0",
     "vuefinder": "^2.7.1",
-    "vuetify": "^3.10.1"
+    "vuetify": "^3.11.5"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.4.0",

@@ -6,7 +6,6 @@ import HomeView from '@/views/HomeView.vue'
 const routes: RouteRecordRaw[] = [
   { path: '/', component: HomeView },
   { path: '/pages/:id', component: HomeView },
-
   { path: '/create/workspace', component: HomeView },
   { path: '/create/notebook/:workspaceId', component: HomeView },
   { path: '/create/page/:notebookId', component: HomeView },

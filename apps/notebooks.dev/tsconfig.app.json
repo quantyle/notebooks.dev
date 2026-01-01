@@ -2,19 +2,18 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": [
     "env.d.ts",
-    "apps/notebooks.dev/src/**/*",
-    "apps/notebooks.dev/src/**/*.vue"
+    "src/**/*",
+    "src/**/*.vue"
   ],
   "exclude": [
-    "apps/notebooks.dev/src/**/__tests__/*"
+    "src/**/__tests__/*"
   ],
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   }
 }
